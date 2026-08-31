@@ -1,0 +1,57 @@
+--products_view
+
+CREATE VIEW gold.product_info AS
+WITH CTE_INFO AS(
+SELECT
+p.product_name,
+p.category,
+p.sub_category,
+p.cost,
+s.order_number,
+s.sales,
+s.quantity,
+s.customer_key,
+s.order_date
+FROM gold.fact_sales s
+LEFT join gold.dim_product p
+ON s.product_key=p.product_key
+WHERE s.order_date IS NOT NULL
+),
+CTE_agg_tables AS(
+SELECT
+product_name,
+category,
+sub_category,
+cost,
+min(order_date) first_date,
+max(order_date) last_date,
+count(order_number) AS total_orders,
+SUM(sales) AS total_sales,
+SUM(quantity) AS total_quantitiy 
+FROM CTE_INFO
+GROUP BY product_name,
+category,
+sub_category,
+cost
+)
+
+SELECT 
+product_name,
+category,
+sub_category,
+cost,
+
+CASE WHEN total_sales<1000 THEN 'Low Preformer'
+WHEN total_sales<5000 THEN 'Medium Preformer'
+ELSE 'High Preformer' END AS preformance_class,
+total_orders,
+total_sales,
+total_quantitiy,
+DATEDIFF(month,first_date,last_date) AS lifespan,
+DATEDIFF(month,last_date,GETDATE()) AS recency,
+total_sales/total_orders AS AOR,
+total_sales/DATEDIFF(month,first_date,last_date)  AS monthly_revenue
+
+
+FROM CTE_agg_tables
+
