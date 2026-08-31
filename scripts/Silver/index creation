@@ -1,0 +1,17 @@
+--index creation
+
+
+
+
+USE datawarehouse
+CREATE CLUSTERED INDEX IDX_crm_cus_info ON silver.crm_cust_info(cst_key)
+GO
+CREATE NONCLUSTERED INDEX IDX_crm_prd_info ON silver.crm_prd_info(cat_id)
+
+CREATE CLUSTERED INDEX IDX_crm_sal_det ON silver.crm_sales_details(sls_cust_id)
+
+CREATE CLUSTERED INDEX IDX_erp_px_cat ON silver.erp_px_cat_g1v2(id)
+
+CREATE CLUSTERED INDEX IDX_erp_cus_az ON silver.erp_cust_az12(cid)
+
+CREATE CLUSTERED INDEX IDX_erp_loc ON silver.erp_loc_a101(cid)
