@@ -1,11 +1,10 @@
 
-
 --creating gold views
-
 USE datawarehouse
 GO
-IF OBJECT_ID('gold.dim_product','v') IS NOT NULL
-   DROP TABLE gold.dim_product;
+   DROP VIEW IF EXISTS gold.dim_product;
+
+GO
 CREATE VIEW gold.dim_product AS
 SELECT 
     ROW_NUMBER() OVER(ORDER BY po.prd_key,po.prd_start_dt) AS product_key,
@@ -26,8 +25,10 @@ WHERE po.prd_end_dt is NULL
 
 
 GO
-IF OBJECT_ID('gold.dim_customer','v') IS NOT NULL
-   DROP TABLE gold.dim_customer;
+
+   DROP VIEW IF EXISTS gold.dim_customer;
+   
+GO
 CREATE VIEW gold.dim_customer AS
 SELECT 
       ROW_NUMBER() OVER(ORDER BY ci.cst_id) AS customer_key,
@@ -48,11 +49,11 @@ SELECT
   LEFT JOIN [silver].[erp_loc_a101] AS cl
   ON  ci.cst_key=cl.cid
 
-
   GO
+  
 
-  IF OBJECT_ID('gold.fact_sales','v') IS NOT NULL
-   DROP TABLE gold.fact_sales;
+  DROP VIEW IF EXISTS gold.fact_sales;
+GO
 CREATE VIEW gold.fact_sales AS 
 SELECT 
     sd.sls_ord_num AS order_number,
