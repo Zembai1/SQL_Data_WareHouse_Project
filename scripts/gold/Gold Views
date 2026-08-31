@@ -4,6 +4,8 @@
 
 USE datawarehouse
 GO
+IF OBJECT_ID('gold.dim_product','v') IS NOT NULL
+   DROP TABLE gold.dim_product;
 CREATE VIEW gold.dim_product AS
 SELECT 
     ROW_NUMBER() OVER(ORDER BY po.prd_key,po.prd_start_dt) AS product_key,
@@ -24,7 +26,8 @@ WHERE po.prd_end_dt is NULL
 
 
 GO
-
+IF OBJECT_ID('gold.dim_customer','v') IS NOT NULL
+   DROP TABLE gold.dim_customer;
 CREATE VIEW gold.dim_customer AS
 SELECT 
       ROW_NUMBER() OVER(ORDER BY ci.cst_id) AS customer_key,
@@ -48,7 +51,8 @@ SELECT
 
   GO
 
-
+  IF OBJECT_ID('gold.fact_sales','v') IS NOT NULL
+   DROP TABLE gold.fact_sales;
 CREATE VIEW gold.fact_sales AS 
 SELECT 
     sd.sls_ord_num AS order_number,
